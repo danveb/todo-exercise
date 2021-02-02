@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo LocalStorage</title>
+
+    <!-- Inline CSS -->
+    <style>
+        /* .completed to line-through todo */
+        .completed {
+            text-decoration: line-through; 
+            color: red; 
+        }
+    </style>
+</head>
+<body>
+    <h1>To do Application</h1>
+    <!-- <form action="#" id="newTodoForm">-->
+    <form action="#" id="newTodoForm">
+        <label for="task">Enter Task:</label>
+        <!-- <input type="text" name="task" id="task" autofocus>-->
+        <input type="text" name="task" id="task" placeholder="e.g. Pick up food" autofocus required>
+        <!-- value in submit button-->
+        <input type="submit" value="Submit">
+    </form>
+    <!-- Why not id in ul-->
+    <ul id="todoList">
+
+    </ul>
+    <!-- clear all button -->
+    <button class="clear">Clear All</button>
+
+    <!-- JS -->
+    <script>
+        // ID for elements
+        const form = document.getElementById('newTodoForm'); 
+        const input = document.getElementById('task'); 
+        const ul = document.getElementById('todoList'); 
+        const clearBtn = document.querySelector('.clear'); 
+
+        // check if anything on localStorage
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || []; 
+        for(let task of tasks) {
+            const li = document.createElement('li'); 
+            li.innerText = task; 
+            ul.appendChild(li); 
+        }
+
+        // form submit 
+        form.addEventListener('submit', function(e) {
+            if(input.value === '' && input.value.length === 0) {
+                alert('Please enter a valid task'); 
+            } else if(input.value.length > 0) {
+                const li = document.createElement('li'); 
+                li.innerText = input.value; 
+                ul.append(li); 
+
+                form.reset(); 
+                e.preventDefault(); 
+
+                // save to localStorage 
+                tasks.push(li.innerText); 
+                for(let task of tasks) {
+                    localStorage.setItem('tasks', JSON.stringify(tasks)); 
+                }
+            };
+        }); 
+        
+        ul.addEventListener('click', function(e) {
+            // if tagName.toLowerCase() 
+            let tagLowerCase = e.target.tagName.toLowerCase(); 
+            if(tagLowerCase === 'li') {
+                e.target.classList.toggle('completed'); 
+                // localStorage.removeItem('tasks'); 
+            }
+        }); 
+        
+        clearBtn.addEventListener('click', function() {
+            const lis = document.querySelectorAll('li'); 
+            // for of loop through li's
+            for(li of lis) {
+                li.remove(); 
+                // localStorage.setItem('tasks', JSON.stringify(tasks)); 
+                localStorage.removeItem('tasks'); 
+            }
+        }); 
+
+    </script>
+
+</body>
+</html>
